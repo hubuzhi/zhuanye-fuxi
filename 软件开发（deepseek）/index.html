@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>专业知识复习自检</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 12px;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+    .answer-content {
+      color: #4a5568;
+      font-size: 14px;
+    }
+    .answer-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #4a5568;
+    }
+    .answer-input {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+    .submit-answer-btn {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .submit-answer-btn:hover {
+      background: #2563eb;
+    }
+    .submit-answer-btn:disabled {
+      background: #a0aec0;
+      cursor: not-allowed;
+    }
+    .answer-result {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .result-correct {
+      color: #22c55e;
+    }
+    .result-error {
+      color: #e53e3e;
+    }
+    .result-detail {
+      color: #718096;
+      font-weight: normal;
+      font-size: 13px;
+    }
+    .question-title {
+      white-space: pre-wrap;
+      line-height: 1.7;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .user-phone {
+      font-weight: 500;
+      color: #3b82f6;
+    }
+    .logout-btn {
+      background: #e53e3e;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      background: #c53030;
+    }
+    .analysis-section {
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 8px;
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .code-section {
+      margin-top: 16px;
+    }
+    .code-section strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #334155;
+    }
+    .answer-section {
+      margin-top: 16px;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 8px;
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .notification {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      color: #856404;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 登录页面 -->
+<div class="login-wrap" id="loginPage">
+  <div class="header">
+    <h1>专业知识复习自检</h1>
+    <p class="desc">登录账号，开始使用</p>
+  </div>
+  <div class="login-card">
+    <div class="tab-box">
+      <div class="tab-item active" data-type="login">账号登录</div>
+      <div class="tab-item" data-type="register">手机注册</div>
+    </div>
+
+    <div class="form-wrap show" id="loginForm">
+      <div class="input-group">
+        <label>📱 手机号码</label>
+        <input type="tel" id="loginPhone" placeholder="请输入手机号">
+        <div class="error-tip" id="loginPhoneErr">请输入有效的11位手机号</div>
+      </div>
+      <div class="input-group">
+        <label>🔒 登录密码</label>
+        <input type="password" id="loginPwd" placeholder="请输入密码">
+        <div class="error-tip" id="loginPwdErr">密码不能为空</div>
+        <a href="javascript:void(0)" class="forgot-pwd" id="forgotPwd">忘记密码？</a>
+      </div>
+      <button class="submit-btn" id="loginBtn">立即登录</button>
+      <p class="tip-text">还没有账号？<a class="switch-tab" data-target="register">去注册</a></p>
+      <div class="scan-login">
+        <div class="scan-item" id="wechatLogin">
+          <div class="scan-icon wechat"><i class="fa-brands fa-weixin"></i></div>
+          <span class="scan-text">微信登录</span>
+        </div>
+        <div class="scan-item" id="qqLogin">
+          <div class="scan-icon qq"><i class="fa-brands fa-qq"></i></div>
+          <span class="scan-text">QQ登录</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-wrap" id="registerForm">
+      <div class="input-group">
+        <label>📱 手机号码</label>
+        <input type="tel" id="regPhone" placeholder="请输入手机号">
+        <div class="error-tip" id="regPhoneErr">请输入有效的11位手机号</div>
+      </div>
+      <div class="input-group">
+        <label>🔒 设置密码</label>
+        <input type="password" id="regPwd" placeholder="请设置6位以上密码">
+        <div class="error-tip" id="regPwdErr">密码长度不能少于6位</div>
+      </div>
+      <div class="input-group">
+        <label>🔒 确认密码</label>
+        <input type="password" id="regRePwd" placeholder="请再次输入密码">
+        <div class="error-tip" id="regRePwdErr">两次密码不一致</div>
+      </div>
+      <button class="submit-btn" id="regBtn">完成注册</button>
+      <p class="tip-text">已有账号？<a class="switch-tab" data-target="login">去登录</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- 主页面 -->
+<div class="main-layout" id="mainPage" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-title">全部专业分类</div>
+    <div class="major-list">
+
+      <!-- 1. 计算机与信息类 -->
+      <div class="major-category">
+        <span>💻 计算机与信息类</span>
+        <span class="major-category-icon">▶</span>
+      </div>
+      <div class="major-sub-list">
+        <div class="major-item">计算机科学与技术</div>
+        <div class="subject-list">
+          <div class="subject-item active">Java程序设计</div>
+          <div class="subject-item">数据结构</div>
+          <div class="subject-item">计算机网络</div>
+          <div class="subject-item">操作系统</div>
+        </div>
+
+        <div class="major-item">软件工程</div>
+        <div class="subject-list">
+          <div class="subject-item">Web前端开发</div>
+          <div class="subject-item">数据库</div>
+          <div class="subject-item">软件测试</div>
+        </div>
+
+        <div class="major-item">网络工程</div>
+        <div class="subject-list">
+          <div class="subject-item">路由交换技术</div>
+          <div class="subject-item">网络安全</div>
+        </div>
+
+        <div class="major-item">信息安全</div>
+        <div class="subject-list">
+          <div class="subject-item">密码学</div>
+          <div class="subject-item">渗透测试</div>
+        </div>
+
+        <div class="major-item">人工智能</div>
+        <div class="subject-list">
+          <div class="subject-item">机器学习</div>
+          <div class="subject-item">深度学习</div>
+        </div>
+
+        <div class="major-item">数据科学与大数据技术</div>
+        <div class="subject-list">
+          <div class="subject-item">大数据分析</div>
+          <div class="subject-item">Python开发</div>
+        </div>
+
+        <div class="major-item">物联网工程</div>
+        <div class="subject-list">
+          <div class="subject-item">嵌入式开发</div>
+          <div class="subject-item">传感器技术</div>
+        </div>
+      </div>
+
+      <!-- 2. 电气自动化类 -->
+      <div class="major-category">
+        <span>⚡ 电气自动化类</span>
+        <span class="major-category-icon">▶</span>
+      </div>
+      <div class="major-sub-list">
+        <div class="major-item">电气工程及其自动化</div>
+        <div class="subject-list">
+          <div class="subject-item">电路原理</div>
+          <div class="subject-item">电力系统分析</div>
+        </div>
+
+        <div class="major-item">自动化</div>
+        <div class="subject-list">
+          <div class="subject-item">自动控制原理</div>
+          <div class="subject-item">PLC应用</div>
+        </div>
+
+        <div class="major-item">电子信息工程</div>
+        <div class="subject-list">
+          <div class="subject-item">模拟电子技术</div>
+          <div class="subject-item">数字电子技术</div>
+        </div>
+
+        <div class="major-item">通信工程</div>
+        <div class="subject-list">
+          <div class="subject-item">通信原理</div>
+          <div class="subject-item">信号处理</div>
+        </div>
+      </div>
+
+      <!-- 3. 机械土木类 -->
+      <div class="major-category">
+        <span>🔧 机械土木类</span>
+        <span class="major-category-icon">▶</span>
+      </div>
+      <div class="major-sub-list">
+        <div class="major-item">机械设计制造及其自动化</div>
+        <div class="subject-list">
+          <div class="subject-item">机械制图</div>
+          <div class="subject-item">机械设计</div>
+        </div>
+
+        <div class="major-item">土木工程</div>
+        <div class="subject-list">
+          <div class="subject-item">建筑力学</div>
+          <div class="subject-item">土力学</div>
+        </div>
+
+        <div class="major-item">建筑环境与能源应用工程</div>
+        <div class="subject-list">
+          <div class="subject-item">暖通空调</div>
+          <div class="subject-item">流体力学</div>
+        </div>
+
+        <div class="major-item">车辆工程</div>
+        <div class="subject-list">
+          <div class="subject-item">汽车构造</div>
+          <div class="subject-item">汽车理论</div>
+        </div>
+      </div>
+
+      <!-- 4. 经管财会类 -->
+      <div class="major-category">
+        <span>📊 经管财会类</span>
+        <span class="major-category-icon">▶</span>
+      </div>
+      <div class="major-sub-list">
+        <div class="major-item">会计学</div>
+        <div class="subject-list">
+          <div class="subject-item">基础会计</div>
+          <div class="subject-item">中级财务会计</div>
+        </div>
+
+        <div class="major-item">财务管理</div>
+        <div class="subject-list">
+          <div class="subject-item">财务管理学</div>
+          <div class="subject-item">证券投资</div>
+        </div>
+
+        <div class="major-item">经济学</div>
+        <div class="subject-list">
+          <div class="subject-item">微观经济学</div>
+          <div class="subject-item">宏观经济学</div>
+        </div>
+
+        <div class="major-item">国际经济与贸易</div>
+        <div class="subject-list">
+          <div class="subject-item">国际贸易实务</div>
+          <div class="subject-item">外贸函电</div>
+        </div>
+
+        <div class="major-item">工商管理</div>
+        <div class="subject-list">
+          <div class="subject-item">管理学原理</div>
+          <div class="subject-item">企业管理</div>
+        </div>
+
+        <div class="major-item">市场营销</div>
+        <div class="subject-list">
+          <div class="subject-item">市场营销学</div>
+          <div class="subject-item">消费者行为学</div>
+        </div>
+      </div>
+
+      <!-- 5. 农林生物类 -->
+      <div class="major-category">
+        <span>🌱 农林生物类</span>
+        <span class="major-category-icon">▶</span>
+      </div>
+      <div class="major-sub-list">
+        <div class="major-item">农学</div>
+        <div class="subject-list">
+          <div class="subject-item">作物栽培学</div>
+          <div class="subject-item">植物保护</div>
+        </div>
+
+        <div class="major-item">园艺</div>
+        <div class="subject-list">
+          <div class="subject-item">园艺植物育种</div>
+          <div class="subject-item">花卉学</div>
+        </div>
+
+        <div class="major-item">动物医学</div>
+        <div class="subject-list">
+          <div class="subject-item">动物解剖学</div>
+          <div class="subject-item">兽医病理学</div>
+        </div>
+
+        <div class="major-item">生物技术</div>
+        <div class="subject-list">
+          <div class="subject-item">生物化学</div>
+          <div class="subject-item">分子生物学</div>
+        </div>
+
+        <div class="major-item">林学</div>
+        <div class="subject-list">
+          <div class="subject-item">树木学</div>
+          <div class="subject-item">森林生态学</div>
+        </div>
+      </div>
+
+      <!-- 6. 文法艺术类 -->
+      <div class="major-category">
+        <span>📖 文法艺术类</span>
+        <span class="major-category-icon">▶</span>
+      </div>
+      <div class="major-sub-list">
+        <div class="major-item">汉语言文学</div>
+        <div class="subject-list">
+          <div class="subject-item">古代文学</div>
+          <div class="subject-item">现代汉语</div>
+        </div>
+
+        <div class="major-item">英语</div>
+        <div class="subject-list">
+          <div class="subject-item">综合英语</div>
+          <div class="subject-item">英美文学</div>
+        </div>
+
+        <div class="major-item">法学</div>
+        <div class="subject-list">
+          <div class="subject-item">民法</div>
+          <div class="subject-item">刑法</div>
+        </div>
+
+        <div class="major-item">新闻学</div>
+        <div class="subject-list">
+          <div class="subject-item">新闻采访</div>
+          <div class="subject-item">传播学</div>
+        </div>
+
+        <div class="major-item">视觉传达设计</div>
+        <div class="subject-list">
+          <div class="subject-item">平面设计</div>
+          <div class="subject-item">色彩构成</div>
+        </div>
+
+        <div class="major-item">环境设计</div>
+        <div class="subject-list">
+          <div class="subject-item">室内设计</div>
+          <div class="subject-item">景观设计</div>
+        </div>
+      </div>
+
+      <!-- 7. 医药护理类 -->
+      <div class="major-category">
+        <span>🏥 医药护理类</span>
+        <span class="major-category-icon">▶</span>
+      </div>
+      <div class="major-sub-list">
+        <div class="major-item">临床医学</div>
+        <div class="subject-list">
+          <div class="subject-item">人体解剖学</div>
+          <div class="subject-item">生理学</div>
+        </div>
+
+        <div class="major-item">护理学</div>
+        <div class="subject-list">
+          <div class="subject-item">基础护理学</div>
+          <div class="subject-item">内科护理</div>
+        </div>
+
+        <div class="major-item">药学</div>
+        <div class="subject-list">
+          <div class="subject-item">药理学</div>
+          <div class="subject-item">药剂学</div>
+        </div>
+
+        <div class="major-item">预防医学</div>
+        <div class="subject-list">
+          <div class="subject-item">流行病学</div>
+          <div class="subject-item">卫生统计学</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="right-content">
+    <div class="top-card">
+      <div class="user-info">
+        <span class="user-phone" id="userPhone">138****8888</span>
+        <button class="logout-btn" id="logoutBtn">退出登录</button>
+      </div>
+      <h1>专业知识复习自检</h1>
+      <div class="desc-line">选择学科 + 年级难度，一键生成练习题</div>
+      <div class="filter-row">
+        <div class="filter-group">
+          <label>📖 当前学科</label>
+          <input type="text" id="subjectName" placeholder="请选择或输入学科名称" value="Java程序设计">
+        </div>
+        <div class="filter-group">
+          <label>🎓 大学年级</label>
+          <select id="gradeSelect">
+            <option value="大一">大一</option>
+            <option value="大二" selected>大二</option>
+            <option value="大三">大三</option>
+            <option value="大四">大四</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>⚡ 难度</label>
+          <select id="difficultySelect">
+            <option value="初级">初级</option>
+            <option value="中级" selected>中级</option>
+            <option value="高级">高级</option>
+          </select>
+        </div>
+        <div class="btn-group">
+          <button class="btn-blue" id="generateBtn">生成试题</button>
+          <button class="btn-gray" id="newTopicBtn">重新生成</button>
+        </div>
+      </div>
+    </div>
+    <!-- API异常提示栏 -->
+    <div id="notification" class="notification" style="display: none;"></div>
+    <div class="exercise-card">
+      <div id="questionsContainer">
+        <div class="loading-txt">🤖 正在生成试题，请稍后...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 登录后选择弹窗 -->
+<div id="selectModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🎓 选择专业与年级</h3>
+      <button class="modal-close" id="modalCloseBtn">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <label>📚 专业大类</label>
+        <select id="modalMajorCategory">
+          <option value="">请选择专业大类</option>
+          <option value="computer">💻 计算机与信息类</option>
+          <option value="electrical">⚡ 电气自动化类</option>
+          <option value="mechanical">🔧 机械土木类</option>
+          <option value="management">📊 经管财会类</option>
+          <option value="agriculture">🌱 农林生物类</option>
+          <option value="arts">📖 文法艺术类</option>
+          <option value="medical">🏥 医药护理类</option>
+        </select>
+      </div>
+      <div class="modal-section">
+        <label>🎯 学科</label>
+        <select id="modalSubject">
+          <option value="">请选择对应学科</option>
+        </select>
+      </div>
+      <div class="modal-section">
+        <label>📅 大学年级</label>
+        <select id="modalGrade">
+          <option value="大一">大一</option>
+          <option value="大二" selected>大二</option>
+          <option value="大三">大三</option>
+          <option value="大四">大四</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-gray" id="modalCancelBtn">跳过选择</button>
+      <button class="submit-btn" id="modalConfirmBtn">确认进入</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 450px;
+  max-width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 5px;
+}
+.modal-body {
+  padding: 24px;
+}
+.modal-section {
+  margin-bottom: 20px;
+}
+.modal-section label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+.modal-section select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+.modal-section select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #f5f5f5;
+}
+.btn-gray {
+  padding: 10px 24px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.btn-gray:hover {
+  background: #f0f0f0;
+}
+</style>
+
+<script src="./script.js?v=20260617n"></script>
+</body>
+</html>
