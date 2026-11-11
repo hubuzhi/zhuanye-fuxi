@@ -948,7 +948,11 @@ const localQuestionBank = {
   '森林生态学': {
     初级: [
       { question: '什么是森林生态学？', answer: '森林生态学研究森林生态系统的结构和功能' },
-      { question: '什么是生态系统？', answer:
+      { question: '什么是生态系统？', answer: '生态系统是生物群落与其无机环境相互作用形成的统一整体' }
+    ]
+  }
+};
+
 window.onload = function() {
   switchForm('login');
   initPhoneValidation();
