@@ -1523,13 +1523,14 @@ async function generateQuestions(subject, grade, diff) {
         questionsContainer.innerHTML = `<div class="loading-txt">数据解析失败，请重新生成</div>`;
       }
     } else {
-      questionsContainer.innerHTML = `<div class="loading-txt">请求异常：${resData.error_msg || '未知错误'}</div>`;
+      const reason = resData.reason ? `（原因：${resData.reason}）` : '';
+      questionsContainer.innerHTML = `<div class="loading-txt">${resData.error || resData.error_msg || '请求异常'}${reason}</div>`;
     }
 
   } catch (err) {
     console.error("请求报错：", err);
-    showNotification('接口调用失败，已切换本地备用题库');
-    questionsContainer.innerHTML = '<div class="loading-txt">接口调用失败，已切换本地备用题库</div>';
+    showNotification('无法连接后端服务，请确认服务已启动');
+    questionsContainer.innerHTML = '<div class="loading-txt">无法连接后端服务<br>请确认已运行 node server.js</div>';
   }
 }
 

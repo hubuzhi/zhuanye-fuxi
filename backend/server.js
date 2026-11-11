@@ -342,6 +342,19 @@ const builtInSubjects = ['Java程序设计', '操作系统', '计算机网络', 
 // 本地备用题库（非计算机类学科，API失败时使用）
 const backupSubjects = ['电路原理', '电力系统分析', '自动控制原理', '通信原理', '机械制图', '建筑力学', '基础会计', '中级财务会计', '微观经济学', '管理学原理'];
 
+// 把 AI 调用异常翻译成用户能看懂的原因
+function describeAiError(error) {
+  const status = error.response && error.response.status;
+  if (status === 402) return '账户余额不足';
+  if (status === 401) return 'API Key 无效';
+  if (status === 429) return '调用频率超限';
+  if (status === 400) return '请求参数有误';
+  if (status && status >= 500) return 'AI 服务端异常';
+  if (error.code === 'ECONNABORTED' || /timeout/i.test(error.message || '')) return '请求超时';
+  if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') return '网络不可达';
+  return '服务异常';
+}
+
 app.post('/api/getQuestion', async (req, res) => {
   const { messages, subject, grade, difficulty } = req.body;
   
@@ -394,7 +407,8 @@ app.post('/api/getQuestion', async (req, res) => {
       res.json({ result: result.data.choices[0].message.content, source: 'api', message: '' });
       return;
     } catch (error) {
-      console.error('API调用失败:', error.message);
+      const aiReason = describeAiError(error);
+      console.error('API调用失败:', error.message, '| 原因:', aiReason);
       
       // ========== 3. API失败：检查是否有本地备用题库 ==========
       if (subject && questionBank[subject]) {
@@ -402,8 +416,9 @@ app.post('/api/getQuestion', async (req, res) => {
         console.log('API异常，切换到本地备用题库:', subject, '题目数量:', questions.length);
         res.json({ 
           result: JSON.stringify(questions), 
-          source: 'backup', 
-          message: '当前API临时异常，已加载本地备用习题' 
+          source: 'backup',
+          reason: aiReason,
+          message: 'AI 出题服务不可用（' + aiReason + '），已切换到本地题库' 
         });
         return;
       }
@@ -417,8 +432,9 @@ app.post('/api/getQuestion', async (req, res) => {
           console.log('API异常，切换到本地备用题库:', match[1], '题目数量:', questions.length);
           res.json({ 
             result: JSON.stringify(questions), 
-            source: 'backup', 
-            message: '当前API临时异常，已加载本地备用习题' 
+            source: 'backup',
+            reason: aiReason,
+            message: 'AI 出题服务不可用（' + aiReason + '），已切换到本地题库' 
           });
           return;
         }
@@ -426,7 +442,11 @@ app.post('/api/getQuestion', async (req, res) => {
       
       // ========== 4. 完全无法获取题目 ==========
       console.error('无法获取题目：本地题库和API均失败');
-      res.status(500).json({ error: '接口调用失败', message: error.message });
+      res.status(500).json({
+        error: '该学科暂无本地题库，且 AI 出题失败',
+        reason: aiReason,
+        message: error.message
+      });
       return;
     }
   }
