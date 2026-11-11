@@ -12,7 +12,7 @@ app.use(express.json({ limit: '10mb', charset: 'utf-8' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb', charset: 'utf-8' }))
 
 // 静态文件目录：相对本文件定位，换机器/换路径都能用
-const staticPath = path.join(__dirname, '..', '软件开发（deepseek）')
+const staticPath = path.join(__dirname, '..', 'frontend')
 console.log('静态文件路径:', staticPath)
 app.use(express.static(staticPath))
 
